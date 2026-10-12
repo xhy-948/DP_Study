@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>差分隐私知识体系地图</title>
+<style>
+  :root{
+    --main:#1A2E4B;      /* 深靛蓝：主关系 */
+    --bg:#F0F2F5;        /* 冷灰底 */
+    --accent:#E8720C;    /* 强调橙：关键变量/结论 */
+    --line:#B9C2CF;
+    --ok:#2F7D5C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;background:#fff;color:#222;padding:24px 20px 40px;line-height:1.55;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  h1{font-size:24px;color:var(--main);text-align:center;margin-bottom:4px;}
+  .sub{text-align:center;color:#666;font-size:13px;margin-bottom:20px;}
+  .legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;margin-bottom:18px;color:#444;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{display:inline-block;width:12px;height:12px;border-radius:3px;}
+  .layer{margin-bottom:6px;}
+  .layer-title{font-size:15px;font-weight:bold;color:var(--main);border-left:4px solid var(--accent);padding-left:8px;margin:14px 0 8px;}
+  .cards{display:flex;flex-wrap:wrap;gap:10px;}
+  .card{flex:1 1 200px;min-width:200px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;}
+  .card b{display:block;color:var(--main);font-size:14px;margin-bottom:4px;}
+  .card .tag{display:inline-block;background:var(--main);color:#fff;border-radius:4px;padding:0 6px;font-size:11px;margin-right:4px;}
+  .card .tag.o{background:var(--accent);}
+  .arrow{text-align:center;color:var(--accent);font-size:16px;line-height:1.1;margin:2px 0;}
+  .tradeline{display:flex;align-items:center;gap:10px;background:#FFF7EE;border:1px solid #F2C79B;border-radius:8px;padding:10px 14px;margin-top:16px;font-size:13px;flex-wrap:wrap;}
+  .tradeline b{color:var(--accent);}
+  .bar{flex:1 1 100%;height:14px;border-radius:7px;background:linear-gradient(90deg,#0E4B8F,#1A2E4B 40%,#E8720C 75%,#F5A623);margin-top:2px;}
+  .bar-labels{display:flex;justify-content:space-between;font-size:11px;color:#555;width:100%;}
+  .materials{margin-top:16px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;font-size:13px;}
+  .materials b{color:var(--main);}
+  .materials ul{list-style:none;margin-top:6px;}
+  .materials li{margin-bottom:5px;padding-left:14px;position:relative;}
+  .materials li::before{content:"▸";position:absolute;left:0;color:var(--accent);}
+  .foot{text-align:center;color:#999;font-size:11px;margin-top:18px;}
+  .badge{display:inline-block;background:var(--ok);color:#fff;border-radius:4px;padding:0 6px;font-size:11px;margin-left:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>差分隐私知识体系地图</h1>
+  <div class="sub">四份材料学习总结 · 理论 → 机制 → 应用 → 前沿 全景示意</div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:#1A2E4B"></i>核心概念/理论</span>
+    <span><i class="dot" style="background:#E8720C"></i>关键权衡/结论</span>
+    <span><i class="dot" style="background:#2F7D5C"></i>应用方向</span>
+    <span style="font-size:12px">标注为“示意”，用于梳理学习结构，非精确测量图</span>
+  </div>
+
+  <!-- 第1层：核心定义 -->
+  <div class="layer">
+    <div class="layer-title">第 1 层 · 差分隐私核心定义（Dwork–Roth，A2）</div>
+    <div class="cards">
+      <div class="card"><b>ε-差分隐私</b>Pr[M(D)∈S] ≤ e<sup>ε</sup>·Pr[M(D′)∈S]<br><span class="tag">A2/A3/A4</span>D、D′ 为邻近数据集，差一条记录</div>
+      <div class="card"><b>(ε,δ)-差分隐私</b>Pr[M(x)∈S] ≤ e<sup>ε</sup>Pr[M(y)∈S] + δ<br><span class="tag o">A1 采用</span>δ 控制最坏情形；支持高级组合</div>
+      <div class="card"><b>隐私预算 ε</b><br>ε 越小隐私越强、噪声越大、可用性越低<br><span class="tag o">工程核心权衡参数</span></div>
+      <div class="card"><b>敏感度 Δf</b><br>全局 / 局部 / 平滑敏感度<br>计数查询 Δf=1，中位数可能达 b−a</div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- 第2层：机制与组合 -->
+  <div class="layer">
+    <div class="layer-title">第 2 层 · 实现机制与组合性质（A2/A3/A4）</div>
+    <div class="cards">
+      <div class="card"><b>Laplace 机制</b>M(D)=f(D)+Lap(Δf/ε)<br>数值型查询；方差 2(Δf)²/ε²</div>
+      <div class="card"><b>指数机制</b>Pr[r]∝exp(εq(D,r)/2Δq)<br>非数值型：方案/选择/分裂点</div>
+      <div class="card"><b>高斯机制</b>η~N(0, 2s²/ε²·log(2/δ))<br>(ε,δ)-DP 主流，配合高级组合定理</div>
+      <div class="card"><b>组合性质</b>序列组合 ε=Σεᵢ<br>并行组合 ε=max εᵢ<br>预算分配：均匀/线性/自适应</div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- 第3层：两大应用方向 -->
+  <div class="layer">
+    <div class="layer-title">第 3 层 · 两大应用方向（A3 / A4 综述）</div>
+    <div class="cards">
+      <div class="card" style="flex:1 1 46%;">
+        <b><span class="badge">应用</span>隐私保护数据发布 PPDR</b>
+        交互式（Laplace / Median / PMW / K-norm / IDC）<br>
+        非交互式 · 直方图（策略一 LP/Boost1/NoiseFirst/DPCube；策略二 树/聚类/傅里叶）<br>
+        批查询（Privelet、层次查询）· 列联表 · 分组发布（DiffGen）· 净化数据集（PAC 学习理论）· 树/网格划分（Quad-Post、kd-standard、DiffPart、UG/AG）
+      </div>
+      <div class="card" style="flex:1 1 46%;">
+        <b><span class="badge">应用</span>隐私保护数据挖掘与机器学习 PPDM</b>
+        接口模式（SuLQ / PINQ）vs 完全访问模式<br>
+        分类（SuLQ-ID3、DiffPID3、DiffP-C4.5、随机决策树）<br>
+        聚类（k-means、抽样-聚合、核心集）· 频繁项集（FIM、PrivBasis、TF）<br>
+        回归（LPLog、ObjectivePerb、FM、DPME）· SVM（PrivateSVM、ObjectiveSVM）<br>
+        原型系统：PINQ / GUPT / Airavat / Pioneer
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- 第4层：前沿 -->
+  <div class="layer">
+    <div class="layer-title">第 4 层 · 前沿应用：拆分学习 + 差分隐私（A1，IEEE TDSC 2025）</div>
+    <div class="cards">
+      <div class="card"><b>双层拆分学习框架</b>SP / GS / 智能电表 三层四实体<br>Split-1（GS）+ Split-2（SP）双拆分 FEDformer<br>客户端只做前向，计算卸载约 95%</div>
+      <div class="card"><b>隐私量化：MINE 互信息</b>输入–激活 MI≈3.32（噪声 1.83，上界 9.12）<br>结构本身即天然防护</div>
+      <div class="card"><b>DP 参数权衡</b>ε=0.5 → MI 1.86，MAE 高 36%<br>ε=2.5 → MAE/MSE 高 16%/26%<br>ε≥5 → 与无 DP 相当</div>
+      <div class="card"><b>抗攻击与开销</b>FSHA 重建 MSE：0.241 → 0.328（加 DP）<br>客户端仅 4.55% 通信、约 5% 计算</div>
+    </div>
+  </div>
+
+  <!-- 权衡条 -->
+  <div class="tradeline">
+    <b>核心权衡：</b>隐私预算 ε 越小 → 隐私保护越强 → 噪声越大 → 数据可用性越低
+    <div class="bar-labels"><span>ε≈0 · 隐私最强 · 数据不可用</span><span>ε≈5 · 隐私与精度兼顾（A1 建议区间）</span><span>ε≈10 · 隐私弱 · 精度高</span></div>
+    <div class="bar"></div>
+  </div>
+
+  <!-- 材料映射 -->
+  <div class="materials">
+    <b>四份材料的分工与阅读顺序：</b>
+    <ul>
+      <li><b>A2 Dwork–Roth《The Algorithmic Foundations of Differential Privacy》</b> → 第 1–2 层理论根基：定义、随机化必要性、组合定理、下界、本地模型（第 1–3、8、11–12 章精读）。</li>
+      <li><b>A3 熊平等《差分隐私保护及其应用》</b> → 第 3 层全景：PPDR / PPDM 两条线、机制对比、接口与完全访问模式。</li>
+      <li><b>A4 张啸剑等《面向数据发布和分析的差分隐私保护》</b> → 第 3 层技术细节：直方图两种策略、树/网格划分、回归/SVM、批量查询、原型系统。</li>
+      <li><b>A1 Iqbal 等 2025《Privacy-Preserving Collaborative Split Learning…》</b> → 第 4 层实证案例：ε-DP / (ε,δ)-DP 落地、互信息量化、攻击验证、开销分析。</li>
+    </ul>
+  </div>
+
+  <div class="foot">示意 · 依据 2026-09 整理的四份学习材料归纳绘制</div>
+</div>
+</body>
+</html>
